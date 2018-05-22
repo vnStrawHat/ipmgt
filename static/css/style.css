@@ -1,0 +1,22 @@
+.form-search {
+	width: 70%;
+    height: auto;
+    top: 5%;
+}
+
+.button-search {
+	margin-left: 30px;
+}
+
+.info-data {
+    padding-right: inherit;
+    margin-left: 1px;
+}
+
+.remove-table-scroll {
+    overflow-y: auto !important;
+}
+
+.ip-list-search {
+    resize: none;
+}
