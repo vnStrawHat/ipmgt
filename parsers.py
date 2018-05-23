@@ -30,3 +30,13 @@ setting_arguments = reqparse.RequestParser()
 setting_arguments.add_argument("name")
 setting_arguments.add_argument("value")
 setting_arguments.add_argument("updated_at")
+
+
+update_arguments = reqparse.RequestParser()
+update_arguments.add_argument("poolid", required=True)
+update_arguments.add_argument("pool", type=ipnetworkvalidate, required=True)
+update_arguments.add_argument("note", required=True)
+update_arguments.add_argument("domain", required=True)
+update_arguments.add_argument("site", required=True)
+update_arguments.add_argument("itowner", required=True)
+update_arguments.add_argument("itcontact", type=mobilenumbervalidate, required=True)

@@ -99,6 +99,22 @@ def getAllIpPool():
     return {"value": returndata}
 
 
+def isPoolIdExist(pool_id):
+    poolinfo = ipPool.query.filter_by(poolid=pool_id).first()
+    if poolinfo is not None:
+        return True
+    else:
+        return False
+
+
+def isDuplicateIPv4Network(pool):
+    poolinfo = ipPool.query.filter_by(pool=pool).first()
+    if poolinfo is not None:
+        return poolinfo.poolid
+    else:
+        return None
+
+
 def getpoolinfo(pool_id):
     poolinfo = ipPool.query.filter_by(poolid=pool_id).first()
     if poolinfo is not None:
@@ -109,22 +125,18 @@ def getpoolinfo(pool_id):
         return None
 
 
-def deleteIPPool(data):
-    poolid = data["Pool Id"]
+def deleteIPPool(poolid):
     ippool = ipPool.query.filter_by(poolid=str(poolid)).first()
-    if ippool is not None:
-        try:
-            database.session.delete(ippool)
-            database.session.commit()
-            return "OK", ""
-        except Exception as e:
-            return "Error", "Cannot delete poolid: %s \n Exception: %s" % (poolid, str(e))
-    else:
-        return "Error", "Do not find IP pool have id: %s" % poolid
+    try:
+        database.session.delete(ippool)
+        database.session.commit()
+        return "OK", ""
+    except Exception as e:
+        return "Error", "Cannot delete poolid: %s \n Exception: %s" % (poolid, str(e))
 
 
 def editIpPool(data):
-    poolid = data["Pool Id"]
+    poolid = data["poolid"]
     poolrecord = ipPool.query.filter_by(poolid=poolid).first()
     if poolrecord is not None:
         poolrecord.pool = data['pool']
@@ -136,7 +148,7 @@ def editIpPool(data):
         poolrecord.deleted = 0
         try:
             database.session.commit()
-            return "OK", ""
+            return "OK", "Debug variable: poolid = %s, result_check = %s" % (poolid, result_check)
         except Exception as e:
             return "Error", "Cannot edit pool id: %s \n Exception: %s" % (poolid, str(e))
     else:
@@ -153,6 +165,8 @@ def addIpPool(data):
     except Exception as e:
         return "Error", e.message + " is not IPv4Network"
 
+    if isDuplicateIPv4Network(pool):
+        return "Error", "%s was existed in database" % pool
     # if len(allipnetwork) > 0:
     #     for ipnetwork in allipnetwork:
     #         if newipnetwork.overlaps(ipaddr.IPv4Network(ipnetwork['pool'])):

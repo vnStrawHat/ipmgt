@@ -5,8 +5,9 @@ from parsers import *
 
 app = Flask(__name__)
 app.config['BUNDLE_ERRORS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\vnstr\\Desktop\\new\\database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['ERROR_404_HELP'] = False
 app.app_context().push()
 database.init_app(app)
 database.create_all(app=app)
@@ -39,8 +40,8 @@ def bulksearch():
 
 
 def abort_if_pool_id_doesnt_exist(pool_id):
-    allIpPool = getAllIpPool()
-    if pool_id not in allIpPool:
+    existed = isPoolIdExist(pool_id)
+    if not existed:
         abort(404, message="pool_id {} doesn't exist".format(pool_id))
 
 
@@ -60,7 +61,7 @@ class IpPoolsList(Resource):
         data['itcontact'] = args['itcontact']
         result = addIpPool(data)
         if result[0] == "OK":
-            return {"value": result[1]}, 201
+            return {"value": result[1], "message": "Success"}, 201
         else:
             abort(400, message=result[1])
 
@@ -72,11 +73,28 @@ class IpPools(Resource):
 
     def delete(self, pool_id):
         abort_if_pool_id_doesnt_exist(pool_id)
-        pass
+        result = deleteIPPool(pool_id)
+        if result[0] == "OK":
+            return {"value": result[1], "message": "Success"}, 201
+        else:
+            abort(400, message=result[1])
 
     def put(self, pool_id):
-        abort_if_pool_id_doesnt_exist(pool_id)
-        pass
+        newdata = {}
+        args = update_arguments.parse_args()
+        abort_if_pool_id_doesnt_exist(args["poolid"])
+        newdata['poolid'] = args['poolid']
+        newdata['pool'] = args['pool']
+        newdata['domain'] = args['domain']
+        newdata['site'] = args['site']
+        newdata['note'] = args['note']
+        newdata['itowner'] = args['itowner']
+        newdata['itcontact'] = args['itcontact']
+        result = editIpPool(newdata)
+        if result[0] == "OK":
+            return {"value": result[1], "message": "Success"}, 201
+        else:
+            abort(400, message=result[1])
 
 
 api.add_resource(IpPoolsList, "/api/v1/ippools")
