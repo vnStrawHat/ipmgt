@@ -96,9 +96,25 @@ class IpPools(Resource):
         else:
             abort(400, message=result[1])
 
+class Validate(Resource):
+    def get(self):
+        args = validate_arguments.parse_args()
+        function = args['function']
+        pool = args['param']
+        poolid = args['id']
+        db_poolid = isDuplicateIPv4Network(pool)
+        if db_poolid is not None:
+            if db_poolid == int(poolid):
+                return {"message": "valid", "debug": "this pool %s belong to this record" % pool}, 201
+            else:
+                return {"message": "invalid", "debug": "Pool %s is duplicate with record id %s"%(pool, str(db_poolid))}, 201
+        else:
+            return {"message": "valid", "debug": "Pool %s do not exist in database" % pool}, 201
+
 
 api.add_resource(IpPoolsList, "/api/v1/ippools")
 api.add_resource(IpPools, '/api/v1/ippools/<pool_id>')
+api.add_resource(Validate, '/api/v1/validate')
 
 
 if __name__ == '__main__':
