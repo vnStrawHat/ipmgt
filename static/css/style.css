@@ -20,3 +20,11 @@
 .ip-list-search {
     resize: none;
 }
+
+.ajax-message {
+    padding: 5px 5px 5px 5px;
+    background-color: lightblue;
+}
+.ajax-message .message-lable {
+    font-weight: 400;
+}

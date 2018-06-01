@@ -175,7 +175,7 @@ $(function() {
                         $("#ipmgt-table").jsGrid("refresh");
                         Metro.dialog.create({
                             title: "Insert success",
-                            content: "<div>Dữ liệu đã được cập nhật</div><br><div>" + JSON.stringify(data) + "</div>",
+                            content: "<div>Dữ liệu cập nhật thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + data.message + "</div></div>",
                             actions: [{
                                 caption: "OK",
                                 cls: "js-dialog-close success",
@@ -185,9 +185,10 @@ $(function() {
                         datatables.splice(datatablesIndex, 1);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
+                        var dataResponse = jQuery.parseJSON(jqXHR.responseText);
                         Metro.dialog.create({
                             title: "Insert failed",
-                            content: "<div>Dữ liệu cập nhật không thành công</div><br><div>" + jqXHR.responseText + "</div>",
+                            content: "<div>Dữ liệu cập nhật không thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + dataResponse.message + "</div></div>",
                             actions: [{
                                 caption: "OK",
                                 cls: "js-dialog-close alert",
@@ -209,7 +210,7 @@ $(function() {
                 success: function (data) {
                     Metro.dialog.create({
                         title: "Insert success",
-                        content: "<div>Dữ liệu đã được cập nhật</div><br><div>" + JSON.stringify(data) + "</div>",
+                        content: "<div>Dữ liệu cập nhật thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + data.message + "</div></div>",
                         actions: [{
                             caption: "OK",
                             cls: "js-dialog-close success",
@@ -217,10 +218,11 @@ $(function() {
                     });
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    var dataResponse = jQuery.parseJSON(jqXHR.responseText);
                     args.cancel = true;
                     Metro.dialog.create({
                         title: "Insert failed",
-                        content: "<div>Dữ liệu cập nhật không thành công</div><br><div>" + jqXHR.responseText + "</div>",
+                        content: "<div>Dữ liệu cập nhật không thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + jdataResponse.message + "</div></div>",
                         actions: [{
                             caption: "OK",
                             cls: "js-dialog-close alert",
@@ -238,7 +240,7 @@ $(function() {
                 success: function (data) {
                     Metro.dialog.create({
                         title: "Insert success",
-                        content: "<div>Dữ liệu đã được cập nhật</div><br><div>" + JSON.stringify(data) + "</div>",
+                        content: "<div>Dữ liệu cập nhật thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + data.message + "</div></div>",
                         actions: [{
                             caption: "OK",
                             cls: "js-dialog-close success",
@@ -246,10 +248,11 @@ $(function() {
                     });
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    var dataResponse = jQuery.parseJSON(jqXHR.responseText);
                     args.cancel = true;
                     Metro.dialog.create({
                         title: "Insert failed",
-                        content: "<div>Dữ liệu cập nhật không thành công</div><br><div>" + jqXHR.responseText + "</div>",
+                        content: "<div>Dữ liệu cập nhật không thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + dataResponse.message + "</div></div>",
                         actions: [{
                             caption: "OK",
                             cls: "js-dialog-close alert",
