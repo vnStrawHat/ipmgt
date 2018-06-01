@@ -148,9 +148,10 @@ def editIpPool(data):
         poolrecord.deleted = 0
         try:
             database.session.commit()
-            return "OK", "Debug variable: poolid = %s, result_check = %s" % (poolid, result_check)
+            # return "OK", "Debug variable: poolid = %s, result_check = %s" % (poolid, result_check)
+            return "OK", ""
         except Exception as e:
-            return "Error", "Cannot edit pool id: %s \n Exception: %s" % (poolid, str(e))
+            return "Error", "Cannot edit pool id: %s <br> Exception: %s" % (poolid, str(e))
     else:
         return "Error", "Do not find IP pool have id: %s" % poolid
 
