@@ -12,6 +12,7 @@ class ipPool(database.Model):
     poolid = database.Column(database.Integer, nullable=False)
     pool = database.Column(database.String(80), unique=True, nullable=False)
     domain = database.Column(database.String(120), nullable=False)
+    pnl = database.Column(database.String(120), nullable=False)
     site = database.Column(database.String(120), nullable=False)
     note = database.Column(database.String(300), nullable=False)
     itowner = database.Column(database.String(120), nullable=False)
@@ -141,6 +142,7 @@ def editIpPool(data):
     if poolrecord is not None:
         poolrecord.pool = data['pool']
         poolrecord.domain = data['domain']
+        poolrecord.pnl = data['pnl']
         poolrecord.site = data['site']
         poolrecord.note = data['note']
         poolrecord.itowner = data['itowner']
@@ -174,12 +176,13 @@ def addIpPool(data):
     #             return "Error", "Overlap with poolid: %s" % ipnetwork['poolid']
 
     domain = data['domain']
+    pnl = data['pnl']
     site = data['site']
     note = data['note']
     itowner = data['itowner']
     itcontact = data['itcontact']
     deleted = 0
-    pooldata = ipPool(poolid=poolid, pool=pool, domain=domain, site=site, note=note, itowner=itowner, itcontact=itcontact, deleted=deleted)
+    pooldata = ipPool(poolid=poolid, pool=pool, domain=domain, pnl=pnl, site=site, note=note, itowner=itowner, itcontact=itcontact, deleted=deleted)
     try:
         database.session.add(pooldata)
         database.session.commit()

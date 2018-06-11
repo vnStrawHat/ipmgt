@@ -114,10 +114,17 @@ $(function() {
                         validate: "required"
                     },
                     {
+                        name: "pnl",
+                        type: "text",
+                        width: 100,
+                        title: "P&L",
+                        validate: "required"
+                    },
+                    {
                         name: "site",
                         type: "text",
                         width: 200,
-                        title: "P&L",
+                        title: "Sites",
                         validate: "required"
                     },
                     {
@@ -282,10 +289,17 @@ $(function() {
                 validate: "required"
             },
             {
+                name: "pnl",
+                type: "text",
+                width: 100,
+                title: "P&L",
+                validate: "required"
+            },
+            {
                 name: "site",
                 type: "text",
                 width: 200,
-                title: "P&L",
+                title: "Sites",
                 validate: "required"
             },
             {
