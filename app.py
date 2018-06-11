@@ -55,6 +55,7 @@ class IpPoolsList(Resource):
         args = addnew_arguments.parse_args()
         data['pool'] = args['pool']
         data['domain'] = args['domain']
+        data['pnl'] = args['pnl']
         data['site'] = args['site']
         data['note'] = args['note']
         data['itowner'] = args['itowner']
@@ -86,6 +87,7 @@ class IpPools(Resource):
         newdata['poolid'] = args['poolid']
         newdata['pool'] = args['pool']
         newdata['domain'] = args['domain']
+        newdata['pnl'] = args['pnl']
         newdata['site'] = args['site']
         newdata['note'] = args['note']
         newdata['itowner'] = args['itowner']
