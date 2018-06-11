@@ -108,7 +108,7 @@ def isPoolIdExist(pool_id):
         return False
 
 
-def isDuplicateIPv4Network(pool):
+def getPoolIDbyPool(pool):
     poolinfo = ipPool.query.filter_by(pool=pool).first()
     if poolinfo is not None:
         return poolinfo.poolid
@@ -153,7 +153,13 @@ def editIpPool(data):
             # return "OK", "Debug variable: poolid = %s, result_check = %s" % (poolid, result_check)
             return "OK", ""
         except Exception as e:
-            return "Error", "Cannot edit pool id: %s <br> Exception: %s" % (poolid, str(e))
+            database.session.rollback()
+            if "UNIQUE constraint failed" in str(e.message):
+                duplicate_id = getPoolIDbyPool(data['pool'])
+                duplicate_poolinfo = getpoolinfo(duplicate_id)
+                return "Error", "Networks %s is duplicate with ID: %s <br> %s" % (data['pool'], str(duplicate_id), duplicate_poolinfo)
+            else:
+                return "Error", "Cannot edit pool id: %s <br> Exception: %s <br> error: %s <br> Message: %s" % (poolid, str(e), str(e.args), str(e.message))
     else:
         return "Error", "Do not find IP pool have id: %s" % poolid
 

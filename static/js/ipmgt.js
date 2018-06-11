@@ -279,7 +279,8 @@ $(function() {
                 name: "pool",
                 type: "text",
                 width: 150,
-                title: "IPv4 Network"
+                title: "IPv4 Network",
+                validate: "required"
             },
             {
                 name: "domain",
