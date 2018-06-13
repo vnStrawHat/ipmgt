@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template
 from raven.contrib.flask import Sentry
 from db import *
+from openpyxl import load_workbook
 from flask_restful import Resource, Api, abort
 from parsers import *
 import os
@@ -75,8 +77,52 @@ class IpPoolsList(Resource):
 
 class IpPools(Resource):
     def get(self, pool_id):
-        abort_if_pool_id_doesnt_exist(pool_id)
-        pass
+        # abort_if_pool_id_doesnt_exist(pool_id)
+        itowner = {
+            "VCM": ["Vũ Tuấn Anh", "v.anhvt7@vincommerce.com"],
+            "VinPearl": ["Vũ Hữu Thành", "v.thanhvh3@vinpearl.com"],
+            "VincomRetail": ["Nguyễn Pháp","v.phapn2@vincom.com.vn"],
+            "VinHomes": ["Vũ Duy Hùng", "v.hungvd@vinhomes.vn"],
+            "VinMec": ["Đỗ Mạnh Hoàng", "v.hoangdm2@vinmec.com"],
+            "VinEco": ["Nguyễn Trần Thành Nhật", "v.nhatntt@vingroup.net"],
+            "VinSchool": ["Trương Trọng Quỳnh, Nguyễn Quang Bảo", "v.quynhtt2@vinschool.com, V.BAONQ@VINSERVICE.NET"],
+            "CN.HN": ["Hoàng Đức Việt", "V.VIETHD@vingroup.net"],
+            "VinFast": ["Trần Quang Huy", "v.congnt9@vinfast.vn"],
+            "Server": ["",""],
+            "VinPro": ["Lưu Văn Lăng, Trần Vũ   ","v.langlv@vinservice.net, v.vut@vinservice.net"]
+        }
+        if int(pool_id) == 0:
+            excelfile = dir_path + os.sep + "all_IP_list.xlsx"
+            wb = load_workbook(excelfile)
+            sheet = wb['All']
+            for row in range(2,2000):
+                data = {}
+                data['domain'] = sheet["A" + str(row)].value if sheet["A" + str(row)].value is not None else ""
+                data['pnl'] = sheet["B" + str(row)].value
+                data['site'] = sheet["C" + str(row)].value
+                data['pool'] = sheet["D" + str(row)].value
+                data['note'] = sheet["E" + str(row)].value
+                if data['pool'] is None:
+                    continue
+                else:
+                    if data['pnl'] is not None:
+                        data['itowner'] = itowner[sheet["B" + str(row)].value][0].decode("utf-8")
+                        data['itcontact'] = itowner[sheet["B" + str(row)].value][1]
+                    else:
+                        data['pnl'] = ""
+                        data['itowner'] = ""
+                        data['itcontact'] = ""
+                    
+                    data['pool'] = data['pool'].strip()
+                    result = addIpPool(data)
+                    if result[0] != "OK":
+                        abort(400, message=result[1])
+                    else:
+                        pass
+
+            return {"value": result[1], "message": "Success"}, 201
+        else:
+            return {"value": "Nothing", "message": "Success"}, 201
 
     def delete(self, pool_id):
         abort_if_pool_id_doesnt_exist(pool_id)

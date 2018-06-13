@@ -9,7 +9,7 @@ database = SQLAlchemy()
 # Initial database
 class ipPool(database.Model):
     id = database.Column(database.Integer, primary_key=True)
-    poolid = database.Column(database.Integer, nullable=False)
+    poolid = database.Column(database.String(40), nullable=False)
     pool = database.Column(database.String(80), unique=True, nullable=False)
     domain = database.Column(database.String(120), nullable=False)
     pnl = database.Column(database.String(120), nullable=False)
@@ -86,7 +86,7 @@ def getIpInfo(ipaddress):
 
 
 def generatePoolId():
-    poolid = str(uuid.uuid4().fields[-1])[:5]
+    poolid = str(uuid.uuid4())
     return poolid
 
 
@@ -166,7 +166,7 @@ def editIpPool(data):
 
 def addIpPool(data):
     # allipnetwork = getAllIpPool()
-    poolid = int(generatePoolId())
+    poolid = generatePoolId()
     pool = data['pool']
     try:
         ipaddr.IPv4Network(pool)
@@ -174,8 +174,8 @@ def addIpPool(data):
     except Exception as e:
         return "Error", e.message + " is not IPv4Network"
 
-    if isDuplicateIPv4Network(pool):
-        return "Error", "%s was existed in database" % pool
+    # if isDuplicateIPv4Network(pool):
+        # return "Error", "%s was existed in database" % pool
     # if len(allipnetwork) > 0:
     #     for ipnetwork in allipnetwork:
     #         if newipnetwork.overlaps(ipaddr.IPv4Network(ipnetwork['pool'])):
