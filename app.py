@@ -3,10 +3,13 @@ from raven.contrib.flask import Sentry
 from db import *
 from flask_restful import Resource, Api, abort
 from parsers import *
+import os
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sqlitedb = 'sqlite:///' + dir_path + os.sep + "database.db"
 app = Flask(__name__)
 app.config['BUNDLE_ERRORS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = sqlitedb
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['ERROR_404_HELP'] = False
 app.app_context().push()
