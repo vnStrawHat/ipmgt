@@ -62,6 +62,7 @@ def insertSetting(data):
         database.session.commit()
         return "OK", ""
     except Exception as e:
+        database.session.rollback()
         return "Error", "Insert Error: " + e.message
 
 
@@ -76,6 +77,7 @@ def editSetting(data):
             database.session.commit()
             return "OK", ""
         except Exception as e:
+            database.session.rollback()
             return "Error", "Cannot edit setting: %s \n Exception: %s" % (settingname_record, str(e))
     else:
         return "Error", "Do not find setting : %s" % settingname_record
@@ -194,4 +196,5 @@ def addIpPool(data):
         database.session.commit()
         return "OK", getpoolinfo(poolid)
     except Exception as e:
+        database.session.rollback()
         return "Error", "Insert Error: " + e.message

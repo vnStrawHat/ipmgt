@@ -251,7 +251,7 @@ $(function() {
                     args.cancel = true;
                     Metro.dialog.create({
                         title: "Insert failed",
-                        content: "<div>Dữ liệu cập nhật không thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + jdataResponse.message + "</div></div>",
+                        content: "<div>Dữ liệu cập nhật không thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + dataResponse.message + "</div></div>",
                         actions: [{
                             caption: "OK",
                             cls: "js-dialog-close alert",
