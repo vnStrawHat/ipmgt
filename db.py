@@ -197,4 +197,9 @@ def addIpPool(data):
         return "OK", getpoolinfo(poolid)
     except Exception as e:
         database.session.rollback()
-        return "Error", "Insert Error: " + e.message
+        if "UNIQUE constraint failed" in str(e.message):
+            duplicate_id = getPoolIDbyPool(data['pool'])
+            duplicate_poolinfo = getpoolinfo(duplicate_id)
+            return "Error", "Networks %s is duplicate with ID: %s <br> %s" % (data['pool'], str(duplicate_id), duplicate_poolinfo)
+        else:
+            return "Error", "Insert Error: " + e.message
