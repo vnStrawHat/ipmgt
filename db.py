@@ -157,9 +157,7 @@ def editIpPool(data):
         except Exception as e:
             database.session.rollback()
             if "UNIQUE constraint failed" in str(e.message):
-                duplicate_id = getPoolIDbyPool(data['pool'])
-                duplicate_poolinfo = getpoolinfo(duplicate_id)
-                return "Error", "Networks %s is duplicate with ID: %s <br> %s" % (data['pool'], str(duplicate_id), duplicate_poolinfo)
+                return "Error", "Networks %s is already existed" % (data['pool'])
             else:
                 return "Error", "Cannot edit pool id: %s <br> Exception: %s <br> error: %s <br> Message: %s" % (poolid, str(e), str(e.args), str(e.message))
     else:
@@ -198,8 +196,6 @@ def addIpPool(data):
     except Exception as e:
         database.session.rollback()
         if "UNIQUE constraint failed" in str(e.message):
-            duplicate_id = getPoolIDbyPool(data['pool'])
-            duplicate_poolinfo = getpoolinfo(duplicate_id)
-            return "Error", "Networks %s is duplicate with ID: %s <br> %s" % (data['pool'], str(duplicate_id), duplicate_poolinfo)
+            return "Error", "Networks %s is already existed" % (data['pool'])
         else:
             return "Error", "Insert Error: " + e.message
