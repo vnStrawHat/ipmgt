@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from raven.contrib.flask import Sentry
 from db import *
 from openpyxl import load_workbook
@@ -23,6 +23,10 @@ sentry.init_app(app)
 
 
 # Application route
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 @app.route("/")
 def hello():
     data = ""
