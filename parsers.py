@@ -24,7 +24,7 @@ addnew_arguments.add_argument("domain", required=True)
 addnew_arguments.add_argument("pnl", required=True)
 addnew_arguments.add_argument("site", required=True)
 addnew_arguments.add_argument("itowner", required=True)
-addnew_arguments.add_argument("itcontact", type=mobilenumbervalidate, required=True)
+addnew_arguments.add_argument("itcontact", required=True)
 
 
 setting_arguments = reqparse.RequestParser()
