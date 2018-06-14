@@ -7,7 +7,7 @@
                     <h2 class="text-light">Bulk Search IP Info</h2>
                 </div>
                 <a class="button info place-right ml-3 fg-white drop-shadow" id="bulksearch"><span class="mif-search"></span> Search</a>
-                <a class="button success place-right ml-3 fg-white drop-shadow" id="exportcsv"><span class="mif-file-download"></span> Export CSV</a>
+                <a class="button success place-right ml-3 fg-white drop-shadow" id="exportxlsx"><span class="mif-file-download"></span> Export CSV</a>
                 <a class="button alert place-right ml-3 fg-white drop-shadow" href="javascript:location.reload(true)"><span class="mif-loop2"></span> Refresh</a>
             </div>
             <br>
@@ -17,9 +17,6 @@
                 </div>
                 <div class="cell colspan-10">
                     <div id="bulk-search-result">
-                    <script>
-                        $(".jsgrid-grid-body table").tableExport({formats: ["xlsx","xls", "csv", "txt"],    });
-                    </script>
                 </div>
             </div>
         </div>

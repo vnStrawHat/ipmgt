@@ -30,34 +30,56 @@ $(function() {
                 lines = uniqueArray(lines);
                 lines.forEach(function(line) {
                     if (ipaddr.IPv4.isValidFourPartDecimal(line.trim())) {
+                        var tmpdata = [];
                         IPv4NetworksData.forEach(function(data) {
                             var IPv4Search = ipaddr.parse(line.trim());
                             var Networks = ipaddr.parseCIDR(data.pool);
                             var match = IPv4Search.match(Networks);
                             if (match) {
-                                var tmp = {};
-                                tmp['searchip'] = line.trim();
-                                tmp['pool'] = data.pool;
-                                tmp['domain'] = data.domain;
-                                tmp['site'] = data.site;
-                                tmp['itowner'] = data.itowner;
-                                tmp['itcontact'] = data.itcontact;
-                                tmp['note'] = data.note;
-                                displaydata.push(tmp);
+                                tmpdata.push({
+                                    network: data.pool,
+                                    data: data
+                                });
                             } else {
                                 return true;
                             }
                         });
+                        var min;
+                        tmpdata.forEach(function(temp){
+                            if (typeof min === 'undefined') {
+                                min = temp.network
+                            }
+                            if (ipaddr.parseCIDR(temp.network) > ipaddr.parseCIDR(min)) {
+                                min = temp.network
+                            }
+                        });
+                        tmpdata.forEach(function(temp){
+                            if (temp.network == min) {
+                                var tmp = {};
+                                tmp['searchip'] = line.trim();
+                                tmp['pool'] = temp.data.pool;
+                                tmp['domain'] = temp.data.domain;
+                                tmp['site'] = temp.data.site;
+                                tmp['itowner'] = temp.data.itowner;
+                                tmp['itcontact'] = temp.data.itcontact;
+                                tmp['note'] = temp.data.note;
+                                displaydata.push(tmp);
+                            };
+                        });
                     } else {
-                        var tmp = {};
-                        tmp['searchip'] = line.trim();
-                        tmp['pool'] = "N/A";
-                        tmp['domain'] = "N/A";
-                        tmp['site'] = "N/A";
-                        tmp['itowner'] = "N/A";
-                        tmp['itcontact'] = "N/A";
-                        tmp['note'] = "N/A";
-                        displaydata.push(tmp);
+                        if (line.length == 0) {
+                            var tmp = {};
+                        } else {
+                            var tmp = {};
+                            tmp['searchip'] = line.trim();
+                            tmp['pool'] = "N/A";
+                            tmp['domain'] = "N/A";
+                            tmp['site'] = "N/A";
+                            tmp['itowner'] = "N/A";
+                            tmp['itcontact'] = "N/A";
+                            tmp['note'] = "N/A";
+                            displaydata.push(tmp);
+                        }
                     }
                 });
                 buildTableBulkSearch(displaydata);
@@ -67,14 +89,12 @@ $(function() {
             }
         });
     });
-    $("#exportcsv").click(function(){
-        var uri = 'data:application/vnd.ms-excel;base64,'
-            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
-            , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-            , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
-        if (!table.nodeType) table = $(".jsgrid-grid-body table")
-        var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
-        window.location.href = uri + base64(format(template, ctx))
+    $("#exportxlsx").click(function(){
+        var fn = "Export-data.xlsx";
+        var type = "xlsx";
+        var elt = document.getElementsByClassName('jsgrid-table')[1];
+        var wb = XLSX.utils.table_to_book(elt, {sheet:"data"});
+        return XLSX.writeFile(wb, fn || ('test.' + (type || 'xlsx')));
     });
     function buildTableBulkSearch(data) {
         $("#bulk-search-result").jsGrid({
