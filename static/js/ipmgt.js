@@ -59,6 +59,7 @@ $(function() {
                                 tmp['searchip'] = line.trim();
                                 tmp['pool'] = temp.data.pool;
                                 tmp['domain'] = temp.data.domain;
+                                tmp['pnl'] = temp.data.pnl
                                 tmp['site'] = temp.data.site;
                                 tmp['itowner'] = temp.data.itowner;
                                 tmp['itcontact'] = temp.data.itcontact;
@@ -74,6 +75,7 @@ $(function() {
                             tmp['searchip'] = line.trim();
                             tmp['pool'] = "N/A";
                             tmp['domain'] = "N/A";
+                            tmp['pnl'] = temp.data.pnl
                             tmp['site'] = "N/A";
                             tmp['itowner'] = "N/A";
                             tmp['itcontact'] = "N/A";
@@ -116,56 +118,56 @@ $(function() {
                 fields: [
                     {
                         name: "searchip",
-                        width: 150,
+                        width: 80,
                         type: "text",
                         title: "IP Address"
                     },
                     {
                         name: "pool",
                         type: "text",
-                        width: 150,
-                        title: "IP Network"
+                        width: 90,
+                        title: "Networks"
                     },
                     {
                         name: "domain",
                         type: "text",
-                        width: 100,
+                        width: 70,
                         title: "Miền",
                         validate: "required"
                     },
                     {
                         name: "pnl",
                         type: "text",
-                        width: 100,
+                        width: 70,
                         title: "P&L",
                         validate: "required"
                     },
                     {
                         name: "site",
                         type: "text",
-                        width: 200,
+                        width: 180,
                         title: "Sites",
+                        validate: "required"
+                    },
+                    {
+                        name: "note",
+                        type: "text",
+                        width: 180,
+                        title: "Note",
                         validate: "required"
                     },
                     {
                         name: "itowner",
                         type: "text",
-                        width: 200,
+                        width: 90,
                         title: "IT Owner",
                         validate: "required"
                     },
                     {
                         name: "itcontact",
                         type: "text",
-                        width: 200,
+                        width: 120,
                         title: "Contact",
-                        validate: "required"
-                    },
-                    {
-                        name: "note",
-                        type: "text",
-                        width: 200,
-                        title: "Note",
                         validate: "required"
                     }
                 ]
@@ -292,28 +294,27 @@ $(function() {
         fields: [
             {
                 name: "poolid",
-                width: 50,
                 title: "ID",
                 visible: false
             },
             {
                 name: "pool",
                 type: "text",
-                width: 150,
+                width: 100,
                 title: "IPv4 Network",
                 validate: "required"
             },
             {
                 name: "domain",
                 type: "text",
-                width: 100,
+                width: 70,
                 title: "Miền",
                 validate: "required"
             },
             {
                 name: "pnl",
                 type: "text",
-                width: 100,
+                width: 70,
                 title: "P&L",
                 validate: "required"
             },
@@ -325,24 +326,24 @@ $(function() {
                 validate: "required"
             },
             {
-                name: "itowner",
+                name: "note",
                 type: "text",
                 width: 200,
+                title: "Note",
+                validate: "required"
+            },
+            {
+                name: "itowner",
+                type: "text",
+                width: 100,
                 title: "IT Owner",
                 validate: "required"
             },
             {
                 name: "itcontact",
                 type: "text",
-                width: 200,
+                width: 130,
                 title: "Contact",
-                validate: "required"
-            },
-            {
-                name: "note",
-                type: "text",
-                width: 200,
-                title: "Note",
                 validate: "required"
             },
             { type: "control" }
