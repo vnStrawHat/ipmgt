@@ -74,7 +74,7 @@ class IpPoolsList(Resource):
         data['itcontact'] = args['itcontact']
         result = addIpPool(data)
         if result[0] == "OK":
-            return {"value": result[1], "message": "Success"}, 201
+            return args, 201
         else:
             abort(400, message=result[1])
 
@@ -95,7 +95,7 @@ class IpPools(Resource):
             "Server": ["",""],
             "VinPro": ["Lưu Văn Lăng, Trần Vũ   ","v.langlv@vinservice.net, v.vut@vinservice.net"]
         }
-        if int(pool_id) == 0:
+        if pool_id == "0":
             excelfile = dir_path + os.sep + "all_IP_list.xlsx"
             wb = load_workbook(excelfile)
             sheet = wb['All']
@@ -116,7 +116,7 @@ class IpPools(Resource):
                         data['pnl'] = ""
                         data['itowner'] = ""
                         data['itcontact'] = ""
-                    
+
                     data['pool'] = data['pool'].strip()
                     result = addIpPool(data)
                     if result[0] != "OK":
@@ -150,7 +150,7 @@ class IpPools(Resource):
         newdata['itcontact'] = args['itcontact']
         result = editIpPool(newdata)
         if result[0] == "OK":
-            return {"value": result[1], "message": "Success"}, 201
+            return args, 201
         else:
             abort(400, message=result[1])
 

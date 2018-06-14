@@ -179,11 +179,10 @@ $(function() {
         inserting: true,
         editing: true,
         sorting: true,
-        paging: false,
+        paging: true,
         autoload: true,
 
         deleteConfirm: "Do you really want to delete this record ?",
-
         controller: {
             loadData: function(filter){
                 var d = $.Deferred();
@@ -196,8 +195,9 @@ $(function() {
                 });
                 return d.promise();
             },
-            deleteItem: function(item) {
-                $.ajax({
+            deleteItem: function (item) {
+                console.log(item);
+                return $.ajax({
                     type: "DELETE",
                     url: "/api/v1/ippools/" + item.poolid,
                     success: function (data) {
@@ -210,8 +210,8 @@ $(function() {
                                 cls: "js-dialog-close success",
                             }]
                         });
-                        var datatablesIndex = $.inArray(item, datatables);
-                        datatables.splice(datatablesIndex, 1);
+                        // var datatablesIndex = $.inArray(item, datatables);
+                        // datatables.splice(datatablesIndex, 1);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         var dataResponse = jQuery.parseJSON(jqXHR.responseText);
@@ -227,70 +227,65 @@ $(function() {
                     }
                 });
             },
+            insertItem: function (item) {
+                return $.ajax({
+                    type: "POST",
+                    url: "/api/v1/ippools",
+                    data: item,
+                    success: function (data) {
+                        Metro.dialog.create({
+                            title: "Insert success",
+                            content: "<div>Dữ liệu cập nhật thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + data.message + "</div></div>",
+                            actions: [{
+                                caption: "OK",
+                                cls: "js-dialog-close success",
+                            }]
+                        });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        var dataResponse = jQuery.parseJSON(jqXHR.responseText);
+                        Metro.dialog.create({
+                            title: "Insert failed",
+                            content: "<div>Dữ liệu cập nhật không thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + dataResponse.message + "</div></div>",
+                            actions: [{
+                                caption: "OK",
+                                cls: "js-dialog-close alert",
+                            }]
+                        });
+                        console.log("loading data failed");
+                    }
+                });
+            },
+            updateItem: function (item) {
+                console.log(item);
+                return $.ajax({
+                    type: "PUT",
+                    url: "/api/v1/ippools/" + item.poolid,
+                    data: item,
+                    success: function (data) {
+                        Metro.dialog.create({
+                            title: "Insert success",
+                            content: "<div>Dữ liệu cập nhật thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + data.message + "</div></div>",
+                            actions: [{
+                                caption: "OK",
+                                cls: "js-dialog-close success",
+                            }]
+                        });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        var dataResponse = jQuery.parseJSON(jqXHR.responseText);
+                        Metro.dialog.create({
+                            title: "Insert failed",
+                            content: "<div>Dữ liệu cập nhật không thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + dataResponse.message + "</div></div>",
+                            actions: [{
+                                caption: "OK",
+                                cls: "js-dialog-close alert",
+                            }]
+                        });
+                    }
+                });
+            },
         },
-        onDataLoaded: function () {
-            $(".jsgrid-grid-body").removeAttr("style");
-        },
-        onItemInserting: function (args) {
-            $.ajax({
-                type: "POST",
-                url: "/api/v1/ippools",
-                data: args.item,
-                success: function (data) {
-                    Metro.dialog.create({
-                        title: "Insert success",
-                        content: "<div>Dữ liệu cập nhật thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + data.message + "</div></div>",
-                        actions: [{
-                            caption: "OK",
-                            cls: "js-dialog-close success",
-                        }]
-                    });
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    var dataResponse = jQuery.parseJSON(jqXHR.responseText);
-                    args.cancel = true;
-                    Metro.dialog.create({
-                        title: "Insert failed",
-                        content: "<div>Dữ liệu cập nhật không thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + dataResponse.message + "</div></div>",
-                        actions: [{
-                            caption: "OK",
-                            cls: "js-dialog-close alert",
-                        }]
-                    });
-                    console.log("loading data failed");
-                }
-            });
-        },
-        onItemUpdating: function (args) {
-            $.ajax({
-                type: "PUT",
-                url: "/api/v1/ippools/" + args.item.poolid,
-                data: args.item,
-                success: function (data) {
-                    Metro.dialog.create({
-                        title: "Insert success",
-                        content: "<div>Dữ liệu cập nhật thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + data.message + "</div></div>",
-                        actions: [{
-                            caption: "OK",
-                            cls: "js-dialog-close success",
-                        }]
-                    });
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    var dataResponse = jQuery.parseJSON(jqXHR.responseText);
-                    args.cancel = true;
-                    Metro.dialog.create({
-                        title: "Insert failed",
-                        content: "<div>Dữ liệu cập nhật không thành công</div><br><div class=\"ajax-message\"><div class=\"message-lable\"><b>Message</b>:</div><div>" + dataResponse.message + "</div></div>",
-                        actions: [{
-                            caption: "OK",
-                            cls: "js-dialog-close alert",
-                        }]
-                    });
-                }
-            });
-        },
-
         fields: [
             {
                 name: "poolid",

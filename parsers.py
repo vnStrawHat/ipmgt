@@ -34,6 +34,7 @@ setting_arguments.add_argument("updated_at")
 
 
 update_arguments = reqparse.RequestParser()
+update_arguments.add_argument("id", required=True)
 update_arguments.add_argument("poolid", required=True)
 update_arguments.add_argument("pool", type=ipnetworkvalidate, required=True)
 update_arguments.add_argument("note", required=True)
