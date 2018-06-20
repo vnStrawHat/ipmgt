@@ -18,8 +18,8 @@ app.app_context().push()
 database.init_app(app)
 database.create_all(app=app)
 api = Api(app)
-sentry = Sentry(app, dsn='https://f89968f901484fd48ff3f3a50bf3b912:5766fc339e7f4d029a39289459508f21@sentry.io/1223183')
-sentry.init_app(app)
+# sentry = Sentry(app, dsn='https://f89968f901484fd48ff3f3a50bf3b912:5766fc339e7f4d029a39289459508f21@sentry.io/1223183')
+# sentry.init_app(app)
 
 
 # Application route

@@ -15,8 +15,7 @@ $(function() {
             beforeSend: function(){
                 activity = Metro.activity.open({
                     type: 'cycle',
-                    overlayColor: '#fff',
-                    overlayAlpha: 1
+                    overlayColor: '#fff'
                 });
             },
             complete: function(){
@@ -175,14 +174,36 @@ $(function() {
         };
     $("#ipmgt-table").jsGrid({
         width: "100%",
-        filtering: false,
+        filtering: true,
         inserting: true,
         editing: true,
         sorting: true,
-        paging: true,
+        paging: false,
         autoload: true,
 
         deleteConfirm: "Do you really want to delete this record ?",
+        loadIndicator: function (config) {
+            var activity;
+            console.log("loading started: " + config.message);
+            activity = Metro.activity.open({
+                type: 'cycle',
+                overlayColor: '#fff'
+            });
+            return {
+                show: function () {
+                    activity = Metro.activity.open({
+                        type: 'cycle',
+                        overlayColor: '#fff'
+                    });
+                },
+                hide: function () {
+                    console.log("loading finished");
+                    Metro.activity.close(activity);
+                }
+            };
+        },
+        rowClick: function (args) {
+        },
         controller: {
             loadData: function(filter){
                 var d = $.Deferred();
