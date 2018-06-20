@@ -178,9 +178,9 @@ $(function() {
         inserting: true,
         editing: true,
         sorting: true,
-        paging: false,
+        paging: true,
         autoload: true,
-
+        pageSize: 12,
         deleteConfirm: "Do you really want to delete this record ?",
         loadIndicator: function (config) {
             var activity;
@@ -210,7 +210,8 @@ $(function() {
                 $.ajax({
                     type: "GET",
                     url: "/api/v1/ippools",
-                    dataType: "json"
+                    dataType: "json",
+                    data: filter
                 }).done(function(response) {
                     d.resolve(response.value);
                 });
@@ -369,35 +370,35 @@ $(function() {
     $(".jsgrid-grid-header").addClass("remove-table-scroll");
     $(".jsgrid-grid-body").addClass("remove-table-scroll");
     // Universal Search
-    $("#searchInput").keyup(function (e) {
-        if (e.keyCode === 13) {
-            var searchstring = this.value.toLowerCase().trim();
-            $(".jsgrid-grid-body table tr").each(function (index) {
-                if (!(index + 1)) return;
-                if (!ipaddr.IPv4.isValidFourPartDecimal(searchstring)) {
-                    // search string is not IPv4
-                    $(this).find("td").each(function () {
-                        var id = $(this).text().toLowerCase().trim();
-                        var not_found = (id.indexOf(searchstring) == -1);
-                        $(this).closest('tr').toggle(!not_found);
-                        return not_found;
-                    });
-                } else {
-                    $(this).find("td").each(function (index) {
-                        var table_value = $(this).text().toLowerCase().trim();
-                        try {
-                            var IPv4Search = ipaddr.parse(searchstring);
-                            var IPv4Tables = ipaddr.parseCIDR(table_value);
-                            var display = IPv4Search.match(IPv4Tables);
-                            $(this).closest('tr').toggle(display);
-                            return !display;
-                        } catch (error) {
-                            return true;
-                        }
-                    });
-                }
-            });
-        }
-    });
+    // $("#searchInput").keyup(function (e) {
+    //     if (e.keyCode === 13) {
+    //         var searchstring = this.value.toLowerCase().trim();
+    //         $(".jsgrid-grid-body table tr").each(function (index) {
+    //             if (!(index + 1)) return;
+    //             if (!ipaddr.IPv4.isValidFourPartDecimal(searchstring)) {
+    //                 // search string is not IPv4
+    //                 $(this).find("td").each(function () {
+    //                     var id = $(this).text().toLowerCase().trim();
+    //                     var not_found = (id.indexOf(searchstring) == -1);
+    //                     $(this).closest('tr').toggle(!not_found);
+    //                     return not_found;
+    //                 });
+    //             } else {
+    //                 $(this).find("td").each(function (index) {
+    //                     var table_value = $(this).text().toLowerCase().trim();
+    //                     try {
+    //                         var IPv4Search = ipaddr.parse(searchstring);
+    //                         var IPv4Tables = ipaddr.parseCIDR(table_value);
+    //                         var display = IPv4Search.match(IPv4Tables);
+    //                         $(this).closest('tr').toggle(display);
+    //                         return !display;
+    //                     } catch (error) {
+    //                         return true;
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //     }
+    // });
 });
 

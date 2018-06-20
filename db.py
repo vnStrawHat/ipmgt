@@ -92,9 +92,17 @@ def generatePoolId():
     return poolid
 
 
-def getAllIpPool():
+def getAllIpPool(filters):
     returndata = []
-    allpool = ipPool.query.all()
+    allpool = ipPool.query.filter(
+        ipPool.pool.contains(filters['pool']),
+        ipPool.domain.contains(filters['domain']),
+        ipPool.pnl.contains(filters['pnl']),
+        ipPool.site.contains(filters['site']),
+        ipPool.note.contains(filters['note']),
+        ipPool.itowner.contains(filters['itowner']),
+        ipPool.itcontact.contains(filters['itcontact'])
+    )
     for pool in allpool:
         data = pool.__dict__
         del data['_sa_instance_state']

@@ -59,7 +59,8 @@ def abort_if_pool_id_doesnt_exist(pool_id):
 
 class IpPoolsList(Resource):
     def get(self):
-        allIpPool = getAllIpPool()
+        filters = filter_arguments.parse_args()
+        allIpPool = getAllIpPool(filters)
         return allIpPool
 
     def post(self):
