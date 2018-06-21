@@ -38,6 +38,11 @@ def metrowoff():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'metro.woff', mimetype='application/octet-stream')
 
 
+@app.route('/static/js/metro.min.js.map')
+def metromap():
+    return send_from_directory(os.path.join(app.root_path, 'static/js'), 'metro.min.js.map', mimetype='application/octet-stream')
+
+
 @app.route("/")
 def hello():
     data = ""
