@@ -27,6 +27,17 @@ api = Api(app)
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+
+@app.route('/static/mif/metro.ttf')
+def metrottf():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'metro.ttf', mimetype='application/octet-stream')
+
+
+@app.route('/static/mif/metro.woff')
+def metrowoff():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'metro.woff', mimetype='application/octet-stream')
+
+
 @app.route("/")
 def hello():
     data = ""

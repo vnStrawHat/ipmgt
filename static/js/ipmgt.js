@@ -12,6 +12,15 @@ $(function() {
             type: "GET",
             url: "/api/v1/ippools",
             dataType: "json",
+            data: {
+                domain: "",
+                itcontact: "",
+                itowner: "",
+                note: "",
+                pnl: "",
+                pool: "",
+                site:""
+            },
             beforeSend: function(){
                 activity = Metro.activity.open({
                     type: 'cycle',
@@ -23,7 +32,7 @@ $(function() {
             },
             success: function(data){
                 IPv4NetworksData = data.value;
-                console.log(IPv4NetworksData);
+                // console.log(IPv4NetworksData);
                 var displaydata = [];
                 var lines = $('.ip-list-search').val().split('\n');
                 lines = uniqueArray(lines);
@@ -90,30 +99,28 @@ $(function() {
             }
         });
     });
-    $("#exportxlsx").click(function(){
+    $("#exportxlsx").click(function () {
+        var data = $('#bulk-search-result').jsGrid('option', 'data');
         var fn = "Export-data.xlsx";
         var type = "xlsx";
-        var elt = document.getElementsByClassName('jsgrid-table')[1];
-        var wb = XLSX.utils.table_to_book(elt, {sheet:"data"});
+        var ws_name = "Data Result";
+        var wb = XLSX.utils.book_new()
+        var ws = XLSX.utils.json_to_sheet(data, {
+            header: ["searchip", "pool", "domain", "pnl", "site", "note", "itowner", "itcontact"]
+        });
+        XLSX.utils.book_append_sheet(wb, ws, ws_name);
         return XLSX.writeFile(wb, fn || ('test.' + (type || 'xlsx')));
     });
     function buildTableBulkSearch(data) {
         $("#bulk-search-result").jsGrid({
-                // height: "50%",
                 width: "100%",
-
                 filtering: false,
                 inserting: false,
                 editing: false,
                 sorting: true,
                 paging: false,
                 autoload: true,
-
-                pageSize: 15,
-                pageButtonCount: 5,
-
                 data: data,
-
                 fields: [
                     {
                         name: "searchip",
@@ -232,8 +239,6 @@ $(function() {
                                 cls: "js-dialog-close success",
                             }]
                         });
-                        // var datatablesIndex = $.inArray(item, datatables);
-                        // datatables.splice(datatablesIndex, 1);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         var dataResponse = jQuery.parseJSON(jqXHR.responseText);
@@ -369,36 +374,5 @@ $(function() {
 
     $(".jsgrid-grid-header").addClass("remove-table-scroll");
     $(".jsgrid-grid-body").addClass("remove-table-scroll");
-    // Universal Search
-    // $("#searchInput").keyup(function (e) {
-    //     if (e.keyCode === 13) {
-    //         var searchstring = this.value.toLowerCase().trim();
-    //         $(".jsgrid-grid-body table tr").each(function (index) {
-    //             if (!(index + 1)) return;
-    //             if (!ipaddr.IPv4.isValidFourPartDecimal(searchstring)) {
-    //                 // search string is not IPv4
-    //                 $(this).find("td").each(function () {
-    //                     var id = $(this).text().toLowerCase().trim();
-    //                     var not_found = (id.indexOf(searchstring) == -1);
-    //                     $(this).closest('tr').toggle(!not_found);
-    //                     return not_found;
-    //                 });
-    //             } else {
-    //                 $(this).find("td").each(function (index) {
-    //                     var table_value = $(this).text().toLowerCase().trim();
-    //                     try {
-    //                         var IPv4Search = ipaddr.parse(searchstring);
-    //                         var IPv4Tables = ipaddr.parseCIDR(table_value);
-    //                         var display = IPv4Search.match(IPv4Tables);
-    //                         $(this).closest('tr').toggle(display);
-    //                         return !display;
-    //                     } catch (error) {
-    //                         return true;
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //     }
-    // });
 });
 

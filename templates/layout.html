@@ -3,18 +3,18 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metro/4.2.7/css/metro-all.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/metro-all.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/metro/4.2.7/js/metro.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.0/shim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.0/xlsx.full.min.js"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename = 'js/jquery.tabledit.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename = 'js/ipaddr.min.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename = 'js/ipmgt.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/jsgrid.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/jsgrid-theme.min.css') }}">
+        <script src="{{ url_for('static', filename = 'js/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename = 'js/metro.min.js') }}"></script>
+        <script src="{{ url_for('static', filename = 'js/jsgrid.js') }}"></script>
+        <script src="{{ url_for('static', filename = 'js/shim.min.js') }}"></script>
+        <script src="{{ url_for('static', filename = 'js/xlsx.full.min.js') }}"></script>
+        <script src="{{ url_for('static', filename = 'js/jquery.tabledit.js') }}"></script>
+        <script src="{{ url_for('static', filename = 'js/ipaddr.min.js') }}"></script>
+        <script src="{{ url_for('static', filename = 'js/ipmgt.js') }}"></script>
         <title>Search any IP</title>
     </head>
     <body>
