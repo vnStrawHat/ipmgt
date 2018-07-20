@@ -21,6 +21,15 @@ $(function() {
                 iplist: JSON.stringify(iplists),
                 cidrsearch: $("input[type='checkbox']").is(':checked')
             },
+            beforeSend: function(){
+                activity = Metro.activity.open({
+                    type: 'cycle',
+                    overlayColor: '#fff'
+                });
+            },
+            complete: function(){
+                Metro.activity.close(activity);
+            },
             success: function (data) {
                 buildTableBulkSearch(data.value);
                 console.log(data);
