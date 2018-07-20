@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, send_from_directory
-from raven.contrib.flask import Sentry
+# from raven.contrib.flask import Sentry
 from db import *
 from openpyxl import load_workbook
 from flask_restful import Resource, Api, abort
@@ -186,10 +186,20 @@ class Validate(Resource):
         else:
             return {"message": "valid", "debug": "Pool %s do not exist in database" % pool}, 201
 
+class Bulksearchip(Resource):
+    def get(self):
+        pass
 
-api.add_resource(IpPoolsList, "/api/v1/ippools")
+    def post(self):
+        filters = bulksearch_arguments.parse_args()
+        result = getResultForBulkSearch(filters)
+        return result, 201
+
+        
+api.add_resource(IpPoolsList, '/api/v1/ippools')
 api.add_resource(IpPools, '/api/v1/ippools/<pool_id>')
 api.add_resource(Validate, '/api/v1/validate')
+api.add_resource(Bulksearchip, '/api/v1/bulksearch')
 
 
 if __name__ == '__main__':

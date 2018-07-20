@@ -8,96 +8,120 @@ $(function() {
     buildTableBulkSearch([]);
     $("#bulksearch").click(function(){
         var activity;
+        var iplists = []
+        var lines = $('.ip-list-search').val().split('\n');
+        var iplists = {
+            iplist: lines,
+        }
         $.ajax({
-            type: "GET",
-            url: "/api/v1/ippools",
+            type: "POST",
+            url: "/api/v1/bulksearch",
             dataType: "json",
             data: {
-                domain: "",
-                itcontact: "",
-                itowner: "",
-                note: "",
-                pnl: "",
-                pool: "",
-                site:""
+                iplist: JSON.stringify(iplists),
+                cidrsearch: $("input[type='checkbox']").is(':checked')
             },
-            beforeSend: function(){
-                activity = Metro.activity.open({
-                    type: 'cycle',
-                    overlayColor: '#fff'
-                });
+            success: function (data) {
+                buildTableBulkSearch(data.value);
+                console.log(data);
             },
-            complete: function(){
-                Metro.activity.close(activity);
-            },
-            success: function(data){
-                IPv4NetworksData = data.value;
-                // console.log(IPv4NetworksData);
-                var displaydata = [];
-                var lines = $('.ip-list-search').val().split('\n');
-                lines = uniqueArray(lines);
-                lines.forEach(function(line) {
-                    if (ipaddr.IPv4.isValidFourPartDecimal(line.trim())) {
-                        var tmpdata = [];
-                        IPv4NetworksData.forEach(function(data) {
-                            var IPv4Search = ipaddr.parse(line.trim());
-                            var Networks = ipaddr.parseCIDR(data.pool);
-                            var match = IPv4Search.match(Networks);
-                            if (match) {
-                                tmpdata.push({
-                                    network: data.pool,
-                                    data: data
-                                });
-                            } else {
-                                return true;
-                            }
-                        });
-                        var min;
-                        tmpdata.forEach(function(temp){
-                            if (typeof min === 'undefined') {
-                                min = temp.network
-                            }
-                            if (ipaddr.parseCIDR(temp.network) > ipaddr.parseCIDR(min)) {
-                                min = temp.network
-                            }
-                        });
-                        tmpdata.forEach(function(temp){
-                            if (temp.network == min) {
-                                var tmp = {};
-                                tmp['searchip'] = line.trim();
-                                tmp['pool'] = temp.data.pool;
-                                tmp['domain'] = temp.data.domain;
-                                tmp['pnl'] = temp.data.pnl
-                                tmp['site'] = temp.data.site;
-                                tmp['itowner'] = temp.data.itowner;
-                                tmp['itcontact'] = temp.data.itcontact;
-                                tmp['note'] = temp.data.note;
-                                displaydata.push(tmp);
-                            };
-                        });
-                    } else {
-                        if (line.length == 0) {
-                            var tmp = {};
-                        } else {
-                            var tmp = {};
-                            tmp['searchip'] = line.trim();
-                            tmp['pool'] = "N/A";
-                            tmp['domain'] = "N/A";
-                            tmp['pnl'] = temp.data.pnl
-                            tmp['site'] = "N/A";
-                            tmp['itowner'] = "N/A";
-                            tmp['itcontact'] = "N/A";
-                            tmp['note'] = "N/A";
-                            displaydata.push(tmp);
-                        }
-                    }
-                });
-                buildTableBulkSearch(displaydata);
-            },
-            fail: function(data){
-                IPv4NetworksData = {};
+            error: function (jqXHR, textStatus, errorThrown) {
+                var dataResponse = jQuery.parseJSON(jqXHR.responseText);
+                console.log(dataResponse);
+                console.log(dataResponse.message);
             }
         });
+        // $.ajax({
+        //     type: "GET",
+        //     url: "/api/v1/ippools",
+        //     dataType: "json",
+        //     data: {
+        //         domain: "",
+        //         itcontact: "",
+        //         itowner: "",
+        //         note: "",
+        //         pnl: "",
+        //         pool: "",
+        //         site:"",
+        //         cidrsearch: $("input[type='checkbox']").is(':checked')
+        //     },
+        //     beforeSend: function(){
+        //         activity = Metro.activity.open({
+        //             type: 'cycle',
+        //             overlayColor: '#fff'
+        //         });
+        //     },
+        //     complete: function(){
+        //         Metro.activity.close(activity);
+        //     },
+        //     success: function(data){
+        //         IPv4NetworksData = data.value;
+        //         // console.log(IPv4NetworksData);
+        //         var displaydata = [];
+        //         var lines = $('.ip-list-search').val().split('\n');
+        //         lines = uniqueArray(lines);
+        //         lines.forEach(function(line) {
+        //             if (ipaddr.IPv4.isValidFourPartDecimal(line.trim())) {
+        //                 var tmpdata = [];
+        //                 IPv4NetworksData.forEach(function(data) {
+        //                     var IPv4Search = ipaddr.parse(line.trim());
+        //                     var Networks = ipaddr.parseCIDR(data.pool);
+        //                     var match = IPv4Search.match(Networks);
+        //                     if (match) {
+        //                         tmpdata.push({
+        //                             network: data.pool,
+        //                             data: data
+        //                         });
+        //                     } else {
+        //                         return true;
+        //                     }
+        //                 });
+        //                 var min;
+        //                 tmpdata.forEach(function(temp){
+        //                     if (typeof min === 'undefined') {
+        //                         min = temp.network
+        //                     }
+        //                     if (ipaddr.parseCIDR(temp.network) > ipaddr.parseCIDR(min)) {
+        //                         min = temp.network
+        //                     }
+        //                 });
+        //                 tmpdata.forEach(function(temp){
+        //                     if (temp.network == min) {
+        //                         var tmp = {};
+        //                         tmp['searchip'] = line.trim();
+        //                         tmp['pool'] = temp.data.pool;
+        //                         tmp['domain'] = temp.data.domain;
+        //                         tmp['pnl'] = temp.data.pnl
+        //                         tmp['site'] = temp.data.site;
+        //                         tmp['itowner'] = temp.data.itowner;
+        //                         tmp['itcontact'] = temp.data.itcontact;
+        //                         tmp['note'] = temp.data.note;
+        //                         displaydata.push(tmp);
+        //                     };
+        //                 });
+        //             } else {
+        //                 if (line.length == 0) {
+        //                     var tmp = {};
+        //                 } else {
+        //                     var tmp = {};
+        //                     tmp['searchip'] = line.trim();
+        //                     tmp['pool'] = "N/A";
+        //                     tmp['domain'] = "N/A";
+        //                     tmp['pnl'] = temp.data.pnl
+        //                     tmp['site'] = "N/A";
+        //                     tmp['itowner'] = "N/A";
+        //                     tmp['itcontact'] = "N/A";
+        //                     tmp['note'] = "N/A";
+        //                     displaydata.push(tmp);
+        //                 }
+        //             }
+        //         });
+        //         buildTableBulkSearch(displaydata);
+        //     },
+        //     fail: function(data){
+        //         IPv4NetworksData = {};
+        //     }
+        // });
     });
     $("#exportxlsx").click(function () {
         var data = $('#bulk-search-result').jsGrid('option', 'data');

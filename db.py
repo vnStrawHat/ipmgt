@@ -1,4 +1,5 @@
 import uuid
+import json
 import ipaddr
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -109,6 +110,80 @@ def getAllIpPool(filters):
         returndata.append(data)
     return {"value": returndata}
 
+def getResultForBulkSearch(filters):
+    iplists = json.loads(filters['iplist'])
+    iplists = iplists['iplist']
+    cidrsearch = filters['cidrsearch']
+    returndata = []
+    if cidrsearch == 'true':
+        allpolldata = []
+        allpool = ipPool.query.all()
+        for pool in allpool:
+            data = pool.__dict__
+            allpolldata.append(data['pool'])
+        for ip in iplists:
+            try:
+                newipnetwork = ipaddr.IPv4Network(ip)
+                match = []
+                correctpool = None
+                for pool in allpolldata:
+                    if newipnetwork.overlaps(ipaddr.IPv4Network(str(pool))):
+                        match.append(pool)
+                print match
+                for ip in match:
+                    if correctpool is not None:
+                        if (ipaddr.IPv4Network(ip) > ipaddr.IPv4Network(correctpool)):
+                            correctpool = ip
+                    else:
+                        correctpool = ip
+                print correctpool
+                result = ipPool.query.filter(ipPool.pool.contains(str(correctpool)))
+                data = result.first()             
+                tmp = {}
+                tmp['searchip'] = ip
+                tmp['pool'] = data.pool
+                tmp['domain'] = data.domain
+                tmp['pnl'] = data.pnl
+                tmp['site'] = data.site
+                tmp['itowner'] = data.itowner
+                tmp['itcontact'] = data.itcontact
+                tmp['note'] = data.note
+                returndata.append(tmp)
+            except Exception as e:
+                tmp = {};
+                tmp['searchip'] = ip
+                tmp['pool'] = "N/A"
+                tmp['domain'] = "N/A"
+                tmp['pnl'] = "N/A"
+                tmp['site'] = "N/A"
+                tmp['itowner'] = "N/A"
+                tmp['itcontact'] = "N/A"
+                tmp['note'] = "N/A"
+                returndata.append(tmp)
+                return {
+                    "value": returndata,
+                    "Error": e.message + " is not IPv4Network"
+                }
+    else:
+        for ip in iplists:
+            result = ipPool.query.filter(
+                ipPool.pool.contains(str(ip))
+            )
+            for pool in result:
+                # data = pool.__dict__
+                data = pool
+                tmp = {};
+                tmp['searchip'] = ip;
+                tmp['pool'] = data.pool;
+                tmp['domain'] = data.domain;
+                tmp['pnl'] = data.pnl
+                tmp['site'] = data.site;
+                tmp['itowner'] = data.itowner;
+                tmp['itcontact'] = data.itcontact;
+                tmp['note'] = data.note;
+                returndata.append(tmp)
+
+    return {"value": returndata}
 
 def isPoolIdExist(pool_id):
     poolinfo = ipPool.query.filter_by(poolid=pool_id).first()
