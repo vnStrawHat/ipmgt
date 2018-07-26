@@ -124,18 +124,18 @@ def getResultForBulkSearch(filters):
         for ip in iplists:
             try:
                 newipnetwork = ipaddr.IPv4Network(ip)
-                match = []
+                matchedlist = []
                 correctpool = None
                 for pool in allpolldata:
                     if newipnetwork.overlaps(ipaddr.IPv4Network(str(pool))):
-                        match.append(pool)
-                print match
-                for ip in match:
+                        matchedlist.append(pool)
+                print matchedlist
+                for ip_match in matchedlist:
                     if correctpool is not None:
-                        if (ipaddr.IPv4Network(ip) > ipaddr.IPv4Network(correctpool)):
-                            correctpool = ip
+                        if (ipaddr.IPv4Network(ip_match) > ipaddr.IPv4Network(correctpool)):
+                            correctpool = ip_match
                     else:
-                        correctpool = ip
+                        correctpool = ip_match
                 print correctpool
                 result = ipPool.query.filter(ipPool.pool.contains(str(correctpool)))
                 data = result.first()             
@@ -149,7 +149,7 @@ def getResultForBulkSearch(filters):
                 tmp['itcontact'] = data.itcontact
                 tmp['note'] = data.note
                 returndata.append(tmp)
-            except Exception as e:
+            except Exception:
                 tmp = {};
                 tmp['searchip'] = ip
                 tmp['pool'] = "N/A"
