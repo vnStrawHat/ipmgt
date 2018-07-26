@@ -160,10 +160,6 @@ def getResultForBulkSearch(filters):
                 tmp['itcontact'] = "N/A"
                 tmp['note'] = "N/A"
                 returndata.append(tmp)
-                return {
-                    "value": returndata,
-                    "Error": e.message + " is not IPv4Network"
-                }
     else:
         for ip in iplists:
             result = ipPool.query.filter(
