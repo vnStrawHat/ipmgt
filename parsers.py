@@ -52,3 +52,7 @@ filter_arguments.add_argument("pnl", required=True)
 filter_arguments.add_argument("site", required=True)
 filter_arguments.add_argument("itowner", required=True)
 filter_arguments.add_argument("itcontact", required=True)
+
+bulksearch_arguments = reqparse.RequestParser()
+bulksearch_arguments.add_argument("iplist", required=True)
+bulksearch_arguments.add_argument("cidrsearch", required=True)
