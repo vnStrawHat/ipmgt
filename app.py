@@ -67,6 +67,12 @@ def bulksearch():
     return render_template('bulksearch.html', data=data)
 
 
+@app.route("/bulkinsert")
+def bulkinsert():
+    data = ""
+    return render_template('bulkinsert.html', data=data)
+
+
 def abort_if_pool_id_doesnt_exist(pool_id):
     existed = isPoolIdExist(pool_id)
     if not existed:
