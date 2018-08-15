@@ -116,7 +116,7 @@ class IpPools(Resource):
             "CN.HN": ["Hoàng Đức Việt", "V.VIETHD@vingroup.net"],
             "VinFast": ["Trần Quang Huy", "v.congnt9@vinfast.vn"],
             "Server": ["",""],
-            "VinPro": ["Lưu Văn Lăng, Trần Vũ   ","v.langlv@vinservice.net, v.vut@vinservice.net"]
+            "VinPro": ["Lưu Văn Lăng, Trần Vũ","v.langlv@vinservice.net, v.vut@vinservice.net"]
         }
         if pool_id == "0":
             excelfile = dir_path + os.sep + "all_IP_list.xlsx"
@@ -209,4 +209,4 @@ api.add_resource(Bulksearchip, '/api/v1/bulksearch')
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8000, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
