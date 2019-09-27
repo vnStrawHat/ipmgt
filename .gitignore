@@ -1,4 +1,3 @@
 *.pyc
 *.db
-all_IP_list.xlsx
-~$all_IP_list.xlsx
+*.xlsx

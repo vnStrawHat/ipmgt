@@ -1,34 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/metro-all.min.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/jsgrid.min.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/jsgrid-theme.min.css') }}">
-        <script src="{{ url_for('static', filename = 'js/jquery.min.js') }}"></script>
-        <script src="{{ url_for('static', filename = 'js/metro.min.js') }}"></script>
-        <script src="{{ url_for('static', filename = 'js/jsgrid.js') }}"></script>
-        <script src="{{ url_for('static', filename = 'js/shim.min.js') }}"></script>
-        <script src="{{ url_for('static', filename = 'js/xlsx.full.min.js') }}"></script>
-        <script src="{{ url_for('static', filename = 'js/jquery.tabledit.js') }}"></script>
-        <script src="{{ url_for('static', filename = 'js/ipaddr.min.js') }}"></script>
-        <script src="{{ url_for('static', filename = 'js/ipmgt.js') }}"></script>
-        <title>Search any IP</title>
-    </head>
-    <body>
-        <header>
-            <div class="app-bar-expand-md bg-cyan fg-white" data-role="appbar">
-                <ul class="app-bar-menu">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="ipmanagement">IP Networks</a></li>
-                    <li><a href="bulkinsert">Bulk Insert</a></li>
-                    <li><a href="bulksearch">Search</a></li>
-                    <li><a href="setting">Setting</a></li>
-                </ul>
-            </div>
-        </header>
-        {% block body %}{% endblock %}
-    </body>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename = 'css/metro-all.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename = 'css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename = 'css/jsgrid.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename = 'css/jsgrid-theme.min.css') }}"
+    />
+    <script src="{{ url_for('static', filename = 'js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'js/metro.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'js/jsgrid.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'js/shim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'js/xlsx.full.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'js/jquery.tabledit.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'js/ipaddr.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'js/ipmgt.js') }}"></script>
+    <title>Search any IP</title>
+  </head>
+  <body>
+    <header>
+      <div class="app-bar-expand-md bg-cyan fg-white" data-role="appbar">
+        <ul class="app-bar-menu">
+          <li><a href="/">Home</a></li>
+          <li><a href="ipmanagement">IP Networks</a></li>
+          <!-- <li><a href="bulkinsert">Bulk Insert</a></li> -->
+          <li><a href="bulksearch">Search</a></li>
+          <li><a href="setting">Setting</a></li>
+        </ul>
+      </div>
+    </header>
+    {% block body %}{% endblock %}
+  </body>
 </html>

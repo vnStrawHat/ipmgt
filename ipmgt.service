@@ -1,0 +1,14 @@
+[Unit]
+Description=uWSGI instance to serve ipgmt
+After=network.target
+
+
+[Service]
+User=trungkfc
+WorkingDirectory=/opt/ipmgt/ipmgt
+ExecStart=/usr/local/bin/uwsgi --ini ipmgt.ini
+
+[Install]
+WantedBy=multi-user.target
+
+

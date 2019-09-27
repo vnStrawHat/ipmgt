@@ -12,26 +12,27 @@ class ipPool(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     poolid = database.Column(database.String(40), nullable=False)
     pool = database.Column(database.String(80), unique=True, nullable=False)
-    domain = database.Column(database.String(120), nullable=False)
-    pnl = database.Column(database.String(120), nullable=False)
-    site = database.Column(database.String(120), nullable=False)
-    note = database.Column(database.String(300), nullable=False)
-    itowner = database.Column(database.String(120), nullable=False)
-    itcontact = database.Column(database.String(120), nullable=False)
-    deleted = database.Column(database.Integer, nullable=False)
+    site = database.Column(database.String(120), nullable=True)
+    description = database.Column(database.String(300), nullable=True)
+    detail = database.Column(database.String(300), nullable=True)
+    note = database.Column(database.String(300), nullable=True)
+    deleted = database.Column(database.Integer, nullable=True)
 
 
 class Setting(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     name = database.Column(database.String(80), unique=True, nullable=False)
     value = database.Column(database.String(80), unique=True, nullable=False)
-    created_at = database.Column(database.String(80), unique=True, nullable=False)
-    updated_at = database.Column(database.String(80), unique=True, nullable=False)
+    created_at = database.Column(
+        database.String(80), unique=True, nullable=False)
+    updated_at = database.Column(
+        database.String(80), unique=True, nullable=False)
 
 
 class User(database.Model):
     id = database.Column(database.Integer, primary_key=True)
-    username = database.Column(database.String(80), unique=True, nullable=False)
+    username = database.Column(
+        database.String(80), unique=True, nullable=False)
     email = database.Column(database.String(120), unique=True, nullable=False)
 
 
@@ -57,7 +58,8 @@ def insertSetting(data):
     value = data['Value']
     created_at = str(datetime.now())[:19]
     updated_at = str(datetime.now())[:19]
-    settingdata = ipPool(name=name, value=value, created_at=created_at, updated_at=updated_at)
+    settingdata = ipPool(name=name, value=value,
+                         created_at=created_at, updated_at=updated_at)
     try:
         database.session.add(settingdata)
         database.session.commit()
@@ -95,25 +97,27 @@ def generatePoolId():
 
 def getAllIpPool(filters):
     returndata = []
-    allpool = ipPool.query.filter(
-        ipPool.pool.contains(filters['pool']),
-        ipPool.domain.contains(filters['domain']),
-        ipPool.pnl.contains(filters['pnl']),
-        ipPool.site.contains(filters['site']),
-        ipPool.note.contains(filters['note']),
-        ipPool.itowner.contains(filters['itowner']),
-        ipPool.itcontact.contains(filters['itcontact'])
-    )
+    if (filters['pool'] == "" and filters['site'] == "" and filters['description'] == "" and filters['detail'] == "" and filters['note'] == ""):
+        allpool = ipPool.query.all()
+    else:
+        allpool = ipPool.query.filter(
+            ipPool.pool.contains(filters['pool']),
+            ipPool.description.contains(filters['description']),
+            ipPool.detail.contains(filters['detail']),
+            ipPool.note.contains(filters['note'])
+        )
     for pool in allpool:
         data = pool.__dict__
         del data['_sa_instance_state']
         returndata.append(data)
     return {"value": returndata}
 
+
 def getResultForBulkSearch(filters):
     iplists = json.loads(filters['iplist'])
     iplists = iplists['iplist']
     cidrsearch = filters['cidrsearch']
+    oneresult = filters['oneresult']
     returndata = []
     if cidrsearch == 'true':
         allpolldata = []
@@ -129,35 +133,46 @@ def getResultForBulkSearch(filters):
                 for pool in allpolldata:
                     if newipnetwork.overlaps(ipaddr.IPv4Network(str(pool))):
                         matchedlist.append(pool)
-                print matchedlist
-                for ip_match in matchedlist:
-                    if correctpool is not None:
-                        if (ipaddr.IPv4Network(ip_match) > ipaddr.IPv4Network(correctpool)):
+                # print matchedlist
+                if oneresult == 'false':
+                    for ip_match in matchedlist:
+                        result = ipPool.query.filter(
+                            ipPool.pool.contains(str(ip_match)))
+                        data = result.first()
+                        tmp = {}
+                        tmp['searchip'] = ip
+                        tmp['pool'] = data.pool
+                        tmp['site'] = data.site
+                        tmp['description'] = data.description
+                        tmp['detail'] = data.detail
+                        tmp['note'] = data.note
+                        returndata.append(tmp)
+                else:
+                    for ip_match in matchedlist:
+                        if correctpool is not None:
+                            if (ipaddr.IPv4Network(ip_match) > ipaddr.IPv4Network(correctpool)):
+                                correctpool = ip_match
+                        else:
                             correctpool = ip_match
-                    else:
-                        correctpool = ip_match
-                print correctpool
-                result = ipPool.query.filter(ipPool.pool.contains(str(correctpool)))
-                data = result.first()             
+                    # print correctpool
+                    result = ipPool.query.filter(
+                        ipPool.pool.contains(str(correctpool)))
+                    data = result.first()
+                    tmp = {}
+                    tmp['searchip'] = ip
+                    tmp['pool'] = data.pool
+                    tmp['site'] = data.site
+                    tmp['description'] = data.description
+                    tmp['detail'] = data.detail
+                    tmp['note'] = data.note
+                    returndata.append(tmp)
+            except Exception:
                 tmp = {}
                 tmp['searchip'] = ip
-                tmp['pool'] = data.pool
-                tmp['domain'] = data.domain
-                tmp['pnl'] = data.pnl
-                tmp['site'] = data.site
-                tmp['itowner'] = data.itowner
-                tmp['itcontact'] = data.itcontact
-                tmp['note'] = data.note
-                returndata.append(tmp)
-            except Exception:
-                tmp = {};
-                tmp['searchip'] = ip
                 tmp['pool'] = "N/A"
-                tmp['domain'] = "N/A"
-                tmp['pnl'] = "N/A"
                 tmp['site'] = "N/A"
-                tmp['itowner'] = "N/A"
-                tmp['itcontact'] = "N/A"
+                tmp['description'] = "N/A"
+                tmp['detail'] = "N/A"
                 tmp['note'] = "N/A"
                 returndata.append(tmp)
     else:
@@ -168,18 +183,17 @@ def getResultForBulkSearch(filters):
             for pool in result:
                 # data = pool.__dict__
                 data = pool
-                tmp = {};
-                tmp['searchip'] = ip;
-                tmp['pool'] = data.pool;
-                tmp['domain'] = data.domain;
-                tmp['pnl'] = data.pnl
-                tmp['site'] = data.site;
-                tmp['itowner'] = data.itowner;
-                tmp['itcontact'] = data.itcontact;
-                tmp['note'] = data.note;
+                tmp = {}
+                tmp['searchip'] = ip
+                tmp['pool'] = data.pool
+                tmp['site'] = data.site
+                tmp['description'] = data.description
+                tmp['detail'] = data.detail
+                tmp['note'] = data.note
                 returndata.append(tmp)
 
     return {"value": returndata}
+
 
 def isPoolIdExist(pool_id):
     poolinfo = ipPool.query.filter_by(poolid=pool_id).first()
@@ -222,12 +236,10 @@ def editIpPool(data):
     poolrecord = ipPool.query.filter_by(poolid=poolid).first()
     if poolrecord is not None:
         poolrecord.pool = data['pool']
-        poolrecord.domain = data['domain']
-        poolrecord.pnl = data['pnl']
         poolrecord.site = data['site']
+        poolrecord.description = data['description']
+        poolrecord.detail = data['detail']
         poolrecord.note = data['note']
-        poolrecord.itowner = data['itowner']
-        poolrecord.itcontact = data['itcontact']
         poolrecord.deleted = 0
         try:
             database.session.commit()
@@ -235,8 +247,8 @@ def editIpPool(data):
             return "OK", ""
         except Exception as e:
             database.session.rollback()
-            if "UNIQUE constraint failed" in str(e.message):
-                return "Error", "Networks %s is already existed" % (data['pool'])
+            if "UNIQUE constraint failed" in str(e):
+                return "Error", "Networks %s is already existed. Detail: %s" % (data['pool'], str(data))
             else:
                 return "Error", "Cannot edit pool id: %s <br> Exception: %s <br> error: %s <br> Message: %s" % (poolid, str(e), str(e.args), str(e.message))
     else:
@@ -260,21 +272,20 @@ def addIpPool(data):
     #         if newipnetwork.overlaps(ipaddr.IPv4Network(ipnetwork['pool'])):
     #             return "Error", "Overlap with poolid: %s" % ipnetwork['poolid']
 
-    domain = data['domain']
-    pnl = data['pnl']
     site = data['site']
+    description = data['description']
+    detail = data['detail']
     note = data['note']
-    itowner = data['itowner']
-    itcontact = data['itcontact']
     deleted = 0
-    pooldata = ipPool(poolid=poolid, pool=pool, domain=domain, pnl=pnl, site=site, note=note, itowner=itowner, itcontact=itcontact, deleted=deleted)
+    pooldata = ipPool(poolid=poolid, pool=pool, site=site, detail=detail,
+                      description=description, note=note, deleted=deleted)
     try:
         database.session.add(pooldata)
         database.session.commit()
         return "OK", getpoolinfo(poolid)
     except Exception as e:
         database.session.rollback()
-        if "UNIQUE constraint failed" in str(e.message):
-            return "Error", "Networks %s is already existed" % (data['pool'])
+        if "UNIQUE constraint failed" in str(e):
+            return "Error", "Networks %s is already existed. Detail: %s" % (data['pool'], str(data))
         else:
-            return "Error", "Insert Error: " + e.message
+            return "Error", "Insert Error: " + str(e)

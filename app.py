@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from flask import Flask, render_template, send_from_directory
 # from raven.contrib.flask import Sentry
 from db import *
@@ -25,7 +26,7 @@ api = Api(app)
 # Application route
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route('/static/mif/metro.ttf')
@@ -89,12 +90,10 @@ class IpPoolsList(Resource):
         data = {}
         args = addnew_arguments.parse_args()
         data['pool'] = args['pool']
-        data['domain'] = args['domain']
-        data['pnl'] = args['pnl']
         data['site'] = args['site']
+        data['description'] = args['description']
+        data['detail'] = args['detail']
         data['note'] = args['note']
-        data['itowner'] = args['itowner']
-        data['itcontact'] = args['itcontact']
         result = addIpPool(data)
         if result[0] == "OK":
             return args, 201
@@ -105,47 +104,32 @@ class IpPoolsList(Resource):
 class IpPools(Resource):
     def get(self, pool_id):
         # abort_if_pool_id_doesnt_exist(pool_id)
-        itowner = {
-            "VCM": ["Vũ Tuấn Anh", "v.anhvt7@vincommerce.com"],
-            "VinPearl": ["Vũ Hữu Thành", "v.thanhvh3@vinpearl.com"],
-            "VincomRetail": ["Nguyễn Pháp","v.phapn2@vincom.com.vn"],
-            "VinHomes": ["Vũ Duy Hùng", "v.hungvd@vinhomes.vn"],
-            "VinMec": ["Đỗ Mạnh Hoàng", "v.hoangdm2@vinmec.com"],
-            "VinEco": ["Nguyễn Trần Thành Nhật", "v.nhatntt@vingroup.net"],
-            "VinSchool": ["Trương Trọng Quỳnh, Nguyễn Quang Bảo", "v.quynhtt2@vinschool.com, V.BAONQ@VINSERVICE.NET"],
-            "CN.HN": ["Hoàng Đức Việt", "V.VIETHD@vingroup.net"],
-            "VinFast": ["Trần Quang Huy", "v.congnt9@vinfast.vn"],
-            "Server": ["",""],
-            "VinPro": ["Lưu Văn Lăng, Trần Vũ","v.langlv@vinservice.net, v.vut@vinservice.net"]
-        }
+        def Standardized(string):
+            if string is not None:
+                return string
+            else:
+                return ""
+
         if pool_id == "0":
-            excelfile = dir_path + os.sep + "all_IP_list.xlsx"
+            excelfile = dir_path + os.sep + "IP_Planing_Total.xlsx"
             wb = load_workbook(excelfile)
             sheet = wb['All']
-            for row in range(2,2000):
+            for row in range(2, 2000):
                 data = {}
-                data['domain'] = sheet["A" + str(row)].value if sheet["A" + str(row)].value is not None else ""
-                data['pnl'] = sheet["B" + str(row)].value
-                data['site'] = sheet["C" + str(row)].value
-                data['pool'] = sheet["D" + str(row)].value
-                data['note'] = sheet["E" + str(row)].value
-                if data['pool'] is None:
-                    continue
-                else:
-                    if data['pnl'] is not None:
-                        data['itowner'] = itowner[sheet["B" + str(row)].value][0].decode("utf-8")
-                        data['itcontact'] = itowner[sheet["B" + str(row)].value][1]
-                    else:
-                        data['pnl'] = ""
-                        data['itowner'] = ""
-                        data['itcontact'] = ""
-
+                data['pool'] = sheet["A" + str(row)].value
+                data['site'] = Standardized(sheet["B" + str(row)].value)
+                data['description'] = Standardized(sheet["C" + str(row)].value)
+                data['detail'] = Standardized(sheet["D" + str(row)].value)
+                data['note'] = Standardized(sheet["E" + str(row)].value)
+                if data['pool'] is not None:
                     data['pool'] = data['pool'].strip()
                     result = addIpPool(data)
                     if result[0] != "OK":
                         abort(400, message=result[1])
                     else:
                         pass
+                else:
+                    continue
 
             return {"value": result[1], "message": "Success"}, 201
         else:
@@ -165,17 +149,16 @@ class IpPools(Resource):
         abort_if_pool_id_doesnt_exist(args["poolid"])
         newdata['poolid'] = args['poolid']
         newdata['pool'] = args['pool']
-        newdata['domain'] = args['domain']
-        newdata['pnl'] = args['pnl']
         newdata['site'] = args['site']
+        newdata['description'] = args['description']
+        newdata['detail'] = args['detail']
         newdata['note'] = args['note']
-        newdata['itowner'] = args['itowner']
-        newdata['itcontact'] = args['itcontact']
         result = editIpPool(newdata)
         if result[0] == "OK":
             return args, 201
         else:
             abort(400, message=result[1])
+
 
 class Validate(Resource):
     def get(self):
@@ -188,9 +171,10 @@ class Validate(Resource):
             if db_poolid == int(poolid):
                 return {"message": "valid", "debug": "this pool %s belong to this record" % pool}, 201
             else:
-                return {"message": "invalid", "debug": "Pool %s is duplicate with record id %s"%(pool, str(db_poolid))}, 201
+                return {"message": "invalid", "debug": "Pool %s is duplicate with record id %s" % (pool, str(db_poolid))}, 201
         else:
             return {"message": "valid", "debug": "Pool %s do not exist in database" % pool}, 201
+
 
 class Bulksearchip(Resource):
     def get(self):
@@ -201,7 +185,7 @@ class Bulksearchip(Resource):
         result = getResultForBulkSearch(filters)
         return result, 201
 
-        
+
 api.add_resource(IpPoolsList, '/api/v1/ippools')
 api.add_resource(IpPools, '/api/v1/ippools/<pool_id>')
 api.add_resource(Validate, '/api/v1/validate')

@@ -1,0 +1,6 @@
+flask
+flask_sqlalchemy
+openpyxl
+ipaddr
+flask_restful
+uwsgi
